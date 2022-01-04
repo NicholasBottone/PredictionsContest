@@ -72,6 +72,15 @@ contestRouter.post(
       return;
     }
 
+    // Check if category is already due or if result has been released
+    if (
+      (category.dueDate && new Date(category.dueDate) < new Date()) ||
+      category.correctPrediction
+    ) {
+      res.status(400).send("Too late to submit this prediction now");
+      return;
+    }
+
     // Check if user has already made a prediction for this category
     const existingPrediction = await Prediction.findOne({
       user: user._id,
