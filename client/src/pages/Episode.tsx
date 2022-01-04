@@ -68,33 +68,14 @@ export default function Episode({ loading, user }: EpisodeProps) {
                       />
                     ))
                 ) : (
-                  <>
-                    <p>No prediction yet</p>
-                    <input
-                      type="text"
-                      placeholder="Enter your prediction"
-                      value={predictionText}
-                      onChange={(e) => setPredictionText(e.target.value)}
-                      disabled={!user}
-                    />
-                    <Button
-                      variant="primary"
-                      disabled={!user}
-                      onClick={() => {
-                        postPrediction(category._id, predictionText).then(
-                          () => {
-                            fetchEpisode(episodeId).then((response) => {
-                              if (response) {
-                                setEpisode(response);
-                              }
-                            });
-                          }
-                        );
-                      }}
-                    >
-                      Submit
-                    </Button>
-                  </>
+                  <SubmitPredictionComponent
+                    predictionText={predictionText}
+                    setPredictionText={setPredictionText}
+                    user={user}
+                    category={category}
+                    episodeId={episodeId}
+                    setEpisode={setEpisode}
+                  />
                 )}
                 <br />
                 <Badge bg="secondary">Other predictions:</Badge>
@@ -147,5 +128,71 @@ function PredictionComponent({
       <UserComponent user={prediction.user} /> - {prediction.prediction} (
       {new Date(prediction.createdAt).toLocaleString()})
     </p>
+  );
+}
+
+function SubmitPredictionComponent({
+  predictionText,
+  setPredictionText,
+  user,
+  category,
+  episodeId,
+  setEpisode,
+}: {
+  predictionText: string;
+  setPredictionText: (text: string) => void;
+  user?: IUser;
+  category: ICategory;
+  episodeId?: string;
+  setEpisode: (episode: IEpisode) => void;
+}) {
+  if (
+    (category.dueDate && new Date(category.dueDate) < new Date()) ||
+    category.correctPrediction
+  ) {
+    return <p>You missed the deadline for this category.</p>;
+  }
+
+  return (
+    <>
+      <p>No prediction yet</p>
+      {category.title.split(" vs ").length === 2 && (
+        <>
+          <Button
+            variant="primary"
+            onClick={() => setPredictionText(category.title.split(" vs ")[0])}
+          >
+            {category.title.split(" vs ")[0]}
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => setPredictionText(category.title.split(" vs ")[1])}
+          >
+            {category.title.split(" vs ")[1]}
+          </Button>
+        </>
+      )}
+      <input
+        type="text"
+        placeholder="Enter your prediction"
+        value={predictionText}
+        onChange={(e) => setPredictionText(e.target.value)}
+      />
+      <Button
+        variant="success"
+        disabled={!user || !predictionText}
+        onClick={() => {
+          postPrediction(category._id, predictionText).then(() => {
+            fetchEpisode(episodeId).then((response) => {
+              if (response) {
+                setEpisode(response);
+              }
+            });
+          });
+        }}
+      >
+        Submit
+      </Button>
+    </>
   );
 }
