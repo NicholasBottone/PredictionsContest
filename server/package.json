@@ -4,7 +4,8 @@
   "description": "Backend for a web app for running live predictions contests",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon src/index.ts"
+    "start": "nodemon src/index.ts",
+    "build": "tsc"
   },
   "author": "Nicholas Bottone",
   "license": "MIT",
