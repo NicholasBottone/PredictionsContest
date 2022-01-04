@@ -9,8 +9,8 @@ export interface IUser {
 
 export interface IPrediction {
   _id: string;
-  user: any;
-  category: any;
+  user: IUser;
+  category: ICategory;
   prediction: string;
   createdAt: Date;
 }
@@ -18,21 +18,21 @@ export interface IPrediction {
 export interface IEpisode {
   _id: string;
   title: string;
-  contest: any;
-  categories: any[];
+  contest: IContest;
+  categories: ICategory[];
 }
 
 export interface IContest {
   _id: string;
   title: string;
-  episodes: any[];
+  episodes: IEpisode[];
 }
 
 export interface ICategory {
   _id: string;
   title: string;
-  episode: any;
-  predictions: any[];
+  episode: IEpisode;
+  predictions: IPrediction[];
   correctPrediction?: string;
   dueDate?: Date;
 }

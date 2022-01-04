@@ -1,27 +1,43 @@
 import React, { useEffect, useState } from "react";
+import { Button, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
-import { getUser } from "../gateway";
-import { IUser } from "../types";
+import { getContests } from "../gateway";
+import { IContest, IUser } from "../types";
 
-export default function Home() {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<IUser | undefined>(undefined);
+interface HomeProps {
+  loading: boolean;
+  user: IUser | undefined;
+}
+
+export default function Home({ loading, user }: HomeProps) {
+  const [contests, setContests] = useState<IContest[]>([]);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const response = await getUser();
+    const fetchContests = async () => {
+      const response = await getContests();
       if (response) {
-        setUser(response);
+        setContests(response);
       }
-      setLoading(false);
     };
-    fetchUser();
+    fetchContests();
   }, []);
 
   return (
     <div>
       <Header loading={loading} user={user} />
-      <h1>Home</h1>
+      <Container style={{ paddingTop: "1rem" }}>
+        <h1>Pick a Contest</h1>
+        <ul>
+          {contests.map((contest) => (
+            <li key={contest._id}>
+              <Link to={`/contests/${contest._id}`}>
+                <Button>{contest.title}</Button>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Container>
     </div>
   );
 }
