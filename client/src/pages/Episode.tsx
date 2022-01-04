@@ -15,21 +15,23 @@ type EpisodeParams = {
   episodeId: string;
 };
 
+async function fetchEpisode(episodeId?: string): Promise<IEpisode | undefined> {
+  if (!episodeId) return;
+  return getEpisode(episodeId);
+}
+
 export default function Episode({ loading, user }: EpisodeProps) {
   const [episode, setEpisode] = useState<IEpisode | undefined>(undefined);
   const { episodeId } = useParams<EpisodeParams>();
 
   const [predictionText, setPredictionText] = useState<string>("");
 
-  const fetchEpisode = async () => {
-    if (!episodeId) return;
-    const response = await getEpisode(episodeId);
-    if (response) {
-      setEpisode(response);
-    }
-  };
   useEffect(() => {
-    fetchEpisode();
+    fetchEpisode(episodeId).then((response) => {
+      if (response) {
+        setEpisode(response);
+      }
+    });
   }, [episodeId]);
 
   return (
@@ -80,7 +82,11 @@ export default function Episode({ loading, user }: EpisodeProps) {
                       onClick={() => {
                         postPrediction(category._id, predictionText).then(
                           () => {
-                            fetchEpisode();
+                            fetchEpisode(episodeId).then((response) => {
+                              if (response) {
+                                setEpisode(response);
+                              }
+                            });
                           }
                         );
                       }}
