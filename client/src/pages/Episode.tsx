@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Badge, Button, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
-import { getEpisode } from "../gateway";
+import { getEpisode, postPrediction } from "../gateway";
 import { IEpisode, IUser } from "../types";
 
 interface EpisodeProps {
@@ -19,14 +19,16 @@ export default function Episode({ loading, user }: EpisodeProps) {
   const [episode, setEpisode] = useState<IEpisode | undefined>(undefined);
   const { episodeId } = useParams<EpisodeParams>();
 
+  const [predictionText, setPredictionText] = useState<string>("");
+
+  const fetchEpisode = async () => {
+    if (!episodeId) return;
+    const response = await getEpisode(episodeId);
+    if (response) {
+      setEpisode(response);
+    }
+  };
   useEffect(() => {
-    const fetchEpisode = async () => {
-      if (!episodeId) return;
-      const response = await getEpisode(episodeId);
-      if (response) {
-        setEpisode(response);
-      }
-    };
     fetchEpisode();
   }, [episodeId]);
 
@@ -49,16 +51,74 @@ export default function Episode({ loading, user }: EpisodeProps) {
                 {category.correctPrediction && (
                   <p>Result: {category.correctPrediction}</p>
                 )}
-                {category.predictions.map((prediction) => (
-                  <p key={prediction._id}>
-                    {prediction.user} - {prediction.prediction} (
-                    {new Date(prediction.createdAt).toLocaleString()})
-                  </p>
-                ))}
+                <Badge bg="primary">Your prediction:</Badge>
+                {category.predictions.filter(
+                  (prediction) => prediction.user._id === user?._id
+                ).length > 0 ? (
+                  category.predictions
+                    .filter((prediction) => prediction.user._id === user?._id)
+                    .map((prediction) => (
+                      <p key={prediction._id}>
+                        <UserComponent user={prediction.user} /> -{" "}
+                        {prediction.prediction} (
+                        {new Date(prediction.createdAt).toLocaleString()})
+                      </p>
+                    ))
+                ) : (
+                  <>
+                    <p>No prediction yet</p>
+                    <input
+                      type="text"
+                      placeholder="Enter your prediction"
+                      value={predictionText}
+                      onChange={(e) => setPredictionText(e.target.value)}
+                      disabled={!user}
+                    />
+                    <Button
+                      variant="primary"
+                      disabled={!user}
+                      onClick={() => {
+                        postPrediction(category._id, predictionText).then(
+                          () => {
+                            fetchEpisode();
+                          }
+                        );
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  </>
+                )}
+                <br />
+                <Badge bg="secondary">Other predictions:</Badge>
+                {category.predictions
+                  .filter((prediction) => prediction.user._id !== user?._id)
+                  .map((prediction) => (
+                    <p key={prediction._id}>
+                      <UserComponent user={prediction.user} /> -{" "}
+                      {prediction.prediction} (
+                      {new Date(prediction.createdAt).toLocaleString()})
+                    </p>
+                  ))}
               </li>
             ))}
         </ul>
       </Container>
     </div>
+  );
+}
+
+function UserComponent({ user }: { user: IUser }) {
+  return (
+    <>
+      <Image
+        src={user.avatar}
+        alt={user.username}
+        roundedCircle
+        height="30"
+        width="30"
+      />
+      <span>{user.username}</span>
+    </>
   );
 }
