@@ -38,7 +38,7 @@ export default function passportConfig() {
           }
           const avatarUrl = profile.avatar
             ? getAvatarUrl(profile.id, profile.avatar)
-            : "/Logo.png";
+            : "/logo.png";
           const newUser = new User({
             discordId: profile.id,
             username: profile.username,

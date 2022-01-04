@@ -6,9 +6,10 @@ export function mongoConnection() {
   mongoose.connect(secrets.MONGODB_URI, () => {
     console.log("Connected to MongoDB!");
   });
-  // TODO Init the mongoose models
-  require("./models/Category");
-  require("./models/Prediction");
-  require("./models/User");
-  require("./models/Contest");
+  // Init the mongoose models
+  require("../models/Category");
+  require("../models/Prediction");
+  require("../models/User");
+  require("../models/Contest");
+  require("../models/Episode");
 }

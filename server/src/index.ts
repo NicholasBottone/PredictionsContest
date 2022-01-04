@@ -28,7 +28,7 @@ app.use(mongoSanitize());
 app.use(
   cors({
     origin: secrets.CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
 );
