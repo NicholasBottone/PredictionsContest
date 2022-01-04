@@ -9,6 +9,7 @@ import {
   postCategory,
   postEpisode,
   putCategory,
+  putEpisode,
 } from "../gateway";
 import { ICategory, IContest, IEpisode, IUser } from "../types";
 
@@ -26,6 +27,7 @@ export default function Admin({ loading, user }: AdminProps) {
   const [episodeId, setEpisodeId] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [image, setImage] = useState<string>("");
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [correctPrediction, setCorrectPrediction] = useState<string>("");
 
@@ -87,9 +89,7 @@ export default function Admin({ loading, user }: AdminProps) {
         </Button>
         <Button
           variant="secondary"
-          onClick={() =>
-            postEpisode(contestId, title).then(() => fetchEpisodes(contestId))
-          }
+          onClick={() => postEpisode(contestId, title)}
           disabled={!contestId || !title || !user?.admin}
         >
           Create Episode
@@ -107,10 +107,15 @@ export default function Admin({ loading, user }: AdminProps) {
         </Button>
         <Button
           variant="info"
+          onClick={() => putEpisode(episodeId, title, image)}
+          disabled={!episodeId || !user?.admin}
+        >
+          Update Episode
+        </Button>
+        <Button
+          variant="info"
           onClick={() =>
-            putCategory(categoryId, title, correctPrediction, dueDate).then(
-              () => fetchCategories(episodeId)
-            )
+            putCategory(categoryId, title, correctPrediction, dueDate)
           }
           disabled={!categoryId || !user?.admin}
         >
@@ -140,6 +145,12 @@ export default function Admin({ loading, user }: AdminProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
+          />
+          <input
+            type="text"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="Image URL"
           />
           <input
             type="text"
@@ -192,23 +203,13 @@ export default function Admin({ loading, user }: AdminProps) {
             {categories.map((category) => (
               <div key={category._id}>
                 <h4>{category.title}</h4>
-                <p>{category._id}</p>
-                <p>Due: {category.dueDate}</p>
-                <p>Correct Prediction: {category.correctPrediction}</p>
-                <Button
-                  variant="light"
-                  size="sm"
-                  onClick={() =>
-                    putCategory(
-                      category._id,
-                      category.title,
-                      category.correctPrediction,
-                      category.dueDate
-                    )
-                  }
-                >
-                  Update Category
-                </Button>
+                <p>
+                  {category._id}
+                  <br />
+                  Due: {category.dueDate}
+                  <br />
+                  Correct Prediction: {category.correctPrediction}
+                </p>
               </div>
             ))}
           </Col>

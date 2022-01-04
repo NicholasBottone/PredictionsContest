@@ -119,3 +119,18 @@ export async function putCategory(
     console.error(error);
   }
 }
+
+export async function putEpisode(id: string, title?: string, image?: string) {
+  try {
+    const res = await axios.put(`/contest/episode/${id}`, {
+      title,
+      image,
+    });
+    if (res.status === 200) {
+      return res.data;
+    }
+    console.log(res.status, res.statusText, res.data);
+  } catch (error) {
+    console.error(error);
+  }
+}

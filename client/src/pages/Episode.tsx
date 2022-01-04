@@ -3,7 +3,7 @@ import { Badge, Button, Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import { getEpisode, postPrediction } from "../gateway";
-import { IEpisode, IUser } from "../types";
+import { ICategory, IEpisode, IPrediction, IUser } from "../types";
 
 interface EpisodeProps {
   loading: boolean;
@@ -39,6 +39,7 @@ export default function Episode({ loading, user }: EpisodeProps) {
       <Header loading={loading} user={user} />
       <Container style={{ paddingTop: "1rem" }}>
         <h1>{episode?.title}</h1>
+        <Image src={episode?.image} fluid alt={episode?.title} />
         <h2>Make your predictions!</h2>
         <ul>
           {episode &&
@@ -60,11 +61,11 @@ export default function Episode({ loading, user }: EpisodeProps) {
                   category.predictions
                     .filter((prediction) => prediction.user._id === user?._id)
                     .map((prediction) => (
-                      <p key={prediction._id}>
-                        <UserComponent user={prediction.user} /> -{" "}
-                        {prediction.prediction} (
-                        {new Date(prediction.createdAt).toLocaleString()})
-                      </p>
+                      <PredictionComponent
+                        key={prediction._id}
+                        prediction={prediction}
+                        category={category}
+                      />
                     ))
                 ) : (
                   <>
@@ -100,11 +101,11 @@ export default function Episode({ loading, user }: EpisodeProps) {
                 {category.predictions
                   .filter((prediction) => prediction.user._id !== user?._id)
                   .map((prediction) => (
-                    <p key={prediction._id}>
-                      <UserComponent user={prediction.user} /> -{" "}
-                      {prediction.prediction} (
-                      {new Date(prediction.createdAt).toLocaleString()})
-                    </p>
+                    <PredictionComponent
+                      key={prediction._id}
+                      prediction={prediction}
+                      category={category}
+                    />
                   ))}
               </li>
             ))}
@@ -126,5 +127,25 @@ function UserComponent({ user }: { user: IUser }) {
       />
       <span>{user.username}</span>
     </>
+  );
+}
+
+function PredictionComponent({
+  prediction,
+  category,
+}: {
+  prediction: IPrediction;
+  category: ICategory;
+}) {
+  const correct = prediction.prediction === category.correctPrediction;
+  const CorrectBadge = () =>
+    correct ? <Badge bg="success">✔</Badge> : <Badge bg="danger">❌</Badge>;
+
+  return (
+    <p>
+      {category.correctPrediction && <CorrectBadge />}
+      <UserComponent user={prediction.user} /> - {prediction.prediction} (
+      {new Date(prediction.createdAt).toLocaleString()})
+    </p>
   );
 }

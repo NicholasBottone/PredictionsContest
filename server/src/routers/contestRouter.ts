@@ -190,7 +190,7 @@ contestRouter.put(
   param("id").isMongoId(),
   body("title").optional().isString(),
   body("correctPrediction").optional().isString(),
-  body("dueDate").optional().isDate(),
+  body("dueDate").optional().isISO8601(),
   async (req, res) => {
     if (!req.user || !(req.user as IUser).admin) {
       res.status(401).send("Unauthorized");
@@ -220,6 +220,41 @@ contestRouter.put(
     }
     await category.save();
     res.send(category);
+  }
+);
+
+// PUT update episode
+contestRouter.put(
+  "/episode/:id",
+  param("id").isMongoId(),
+  body("title").optional().isString(),
+  body("image").optional().isString(),
+  async (req, res) => {
+    if (!req.user || !(req.user as IUser).admin) {
+      res.status(401).send("Unauthorized");
+      return;
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty() || !req.body || !req.params) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    const episode = await Episode.findById(req.params.id);
+    if (!episode) {
+      res.status(404).json({ errors: [{ msg: "Episode not found" }] });
+      return;
+    }
+
+    if (req.body.title) {
+      episode.title = req.body.title;
+    }
+    if (req.body.image) {
+      episode.image = req.body.image;
+    }
+    await episode.save();
+    res.send(episode);
   }
 );
 

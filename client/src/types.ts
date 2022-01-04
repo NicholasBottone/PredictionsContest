@@ -18,6 +18,7 @@ export interface IPrediction {
 export interface IEpisode {
   _id: string;
   title: string;
+  image?: string;
   contest: IContest;
   categories: ICategory[];
 }

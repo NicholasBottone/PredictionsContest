@@ -9,6 +9,10 @@ const EpisodeSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Contest",
   },
+  image: {
+    type: String,
+    required: false,
+  },
   categories: [
     {
       type: Schema.Types.ObjectId,
@@ -20,6 +24,7 @@ const EpisodeSchema = new Schema({
 export interface IEpisode extends Document {
   _id: string;
   title: string;
+  image: string;
   contest: any;
   categories: any[];
 }
