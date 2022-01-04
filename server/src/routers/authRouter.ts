@@ -1,6 +1,5 @@
 import { Router } from "express";
 import passport from "passport";
-import secrets from "../config/secrets";
 
 const authRouter = Router();
 
@@ -24,14 +23,14 @@ authRouter.get(
 
 authRouter.get("/logout", (req, res) => {
   req.logout();
-  res.redirect(secrets.CLIENT_URL);
+  res.redirect(process.env.CLIENT_URL || "");
 });
 
 authRouter.get(
   "/callback",
   passport.authenticate("discord", {
     failureRedirect: "/auth/login",
-    successRedirect: secrets.CLIENT_URL,
+    successRedirect: process.env.CLIENT_URL || "http://localhost:3000",
   })
 );
 

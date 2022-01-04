@@ -10,7 +10,6 @@ import cookieParser from "cookie-parser";
 
 import { mongoConnection } from "./config/mongo";
 import passportConfig from "./config/passport";
-import secrets from "./config/secrets";
 
 import contestRouter from "./routers/contestRouter";
 import authRouter from "./routers/authRouter";
@@ -27,7 +26,7 @@ app.use(express.json());
 app.use(mongoSanitize());
 app.use(
   cors({
-    origin: secrets.CLIENT_URL,
+    origin: process.env.CLIENT_URL || "",
     methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
@@ -39,11 +38,11 @@ mongoConnection();
 // Express session cookie
 app.use(
   session({
-    secret: secrets.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: secrets.MONGODB_URI,
+      mongoUrl: process.env.MONGODB_URI || "",
     }),
   })
 );
@@ -63,7 +62,7 @@ app.use("/contest", contestRouter);
 app.use("/auth", authRouter);
 
 // Start Express server
-const port = secrets.PORT;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
 });

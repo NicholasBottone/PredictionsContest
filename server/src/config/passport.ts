@@ -1,7 +1,6 @@
 import passport from "passport";
 import { Strategy } from "passport-discord";
 import User, { IUser } from "../models/User";
-import secrets from "./secrets";
 
 const getAvatarUrl = (uid: string, hash: string) =>
   `https://cdn.discordapp.com/avatars/${uid}/${hash}.png`;
@@ -25,9 +24,9 @@ export default function passportConfig() {
   passport.use(
     new Strategy(
       {
-        clientID: secrets.DISCORD_CLIENT_ID,
-        clientSecret: secrets.DISCORD_CLIENT_SECRET,
-        callbackURL: secrets.DISCORD_CALLBACK_URL,
+        clientID: process.env.DISCORD_CLIENT_ID || "",
+        clientSecret: process.env.DISCORD_SECRET_TOKEN || "",
+        callbackURL: process.env.DISCORD_CALLBACK_URL || "",
         scope: ["identify"],
       },
       async (_accessToken, _refreshToken, profile, done) => {
