@@ -28,7 +28,7 @@ export default function Admin({ loading, user }: AdminProps) {
   const [categoryId, setCategoryId] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [image, setImage] = useState<string>("");
-  const [dueDate, setDueDate] = useState<Date>(new Date());
+  const [dueDate, setDueDate] = useState<string>("");
   const [correctPrediction, setCorrectPrediction] = useState<string>("");
 
   const fetchContests = async () => {
@@ -115,7 +115,12 @@ export default function Admin({ loading, user }: AdminProps) {
         <Button
           variant="info"
           onClick={() =>
-            putCategory(categoryId, title, correctPrediction, dueDate)
+            putCategory(
+              categoryId,
+              title,
+              correctPrediction,
+              dueDate ? new Date(dueDate).toISOString() : undefined
+            )
           }
           disabled={!categoryId || !user?.admin}
         >
@@ -160,8 +165,10 @@ export default function Admin({ loading, user }: AdminProps) {
           />
           <input
             type="datetime-local"
-            value={dueDate.toISOString().substring(0, 16)}
-            onChange={(e) => setDueDate(new Date(e.target.value))}
+            value={dueDate}
+            onChange={(e) =>
+              e.target.value ? setDueDate(e.target.value) : setDueDate("")
+            }
             placeholder="Due Date"
           />
         </Row>

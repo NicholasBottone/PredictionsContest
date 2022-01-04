@@ -190,7 +190,7 @@ contestRouter.put(
   param("id").isMongoId(),
   body("title").optional().isString(),
   body("correctPrediction").optional().isString(),
-  body("dueDate").optional().isISO8601(),
+  body("dueDate").optional().isString(),
   async (req, res) => {
     if (!req.user || !(req.user as IUser).admin) {
       res.status(401).send("Unauthorized");
@@ -216,7 +216,15 @@ contestRouter.put(
       category.correctPrediction = req.body.correctPrediction;
     }
     if (req.body.dueDate) {
-      category.dueDate = req.body.dueDate;
+      //check if dueDate is a valid date
+      const date = new Date(req.body.dueDate);
+      if (isNaN(date.getTime())) {
+        res.status(400).json({ errors: [{ msg: "Invalid date" }] });
+        return;
+      }
+      category.dueDate = date;
+    } else {
+      category.dueDate = undefined;
     }
     await category.save();
     res.send(category);

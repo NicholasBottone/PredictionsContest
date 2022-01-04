@@ -103,7 +103,7 @@ export async function putCategory(
   id: string,
   title?: string,
   correctPrediction?: string,
-  dueDate?: Date
+  dueDate?: string
 ) {
   try {
     const res = await axios.put(`/contest/category/${id}`, {
