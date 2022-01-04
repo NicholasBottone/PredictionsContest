@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { getUser } from "./gateway";
+import Admin from "./pages/Admin";
 import Contest from "./pages/Contest";
 import Episode from "./pages/Episode";
 import Home from "./pages/Home";
@@ -32,6 +33,10 @@ export default function App() {
         <Route
           path="/contests/:contestId/episodes/:episodeId"
           element={<Episode loading={loading} user={user} />}
+        />
+        <Route
+          path="/admin"
+          element={<Admin loading={loading} user={user} />}
         />
         <Route path="*" element={<h1>404</h1>} />
       </Routes>

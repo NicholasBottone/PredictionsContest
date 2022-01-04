@@ -1,4 +1,5 @@
-import { Container, Image, Nav, Navbar } from "react-bootstrap";
+import { Badge, Container, Image, Nav, Navbar } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import { IUser } from "../types";
 
 interface HeaderProps {
@@ -11,17 +12,30 @@ export default function Header(props: HeaderProps) {
   return (
     <header className="header">
       <Navbar bg="dark" variant="dark">
+        {/* vertically centered */}
         <Container>
-          <Navbar.Brand href="#home">
-            <img
-              alt=""
-              src="/logo.png"
-              width="40"
-              height="40"
-              className="d-inline-block align-top"
-            />{" "}
-            Predictions Contest
-          </Navbar.Brand>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Navbar.Brand>
+              <img
+                alt=""
+                src="/logo.png"
+                width="40"
+                height="40"
+                className="d-inline-block align-top"
+              />{" "}
+              <Badge className="align-middle">Predictions Contest</Badge>
+            </Navbar.Brand>
+          </Link>
+          <Nav className="me-auto">
+            {user?.admin && (
+              <Nav.Link as={Link} to="/admin">
+                Admin
+              </Nav.Link>
+            )}
+            <Nav.Link href="https://github.com/NicholasBottone/PredictionsContest">
+              GitHub
+            </Nav.Link>
+          </Nav>
           <Nav className="mr-auto">
             {loading ? (
               <Navbar.Text>Loading...</Navbar.Text>
