@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col, Badge } from "react-bootstrap";
 import Header from "../components/Header";
 import {
   getContest,
@@ -32,6 +32,7 @@ export default function Admin({ loading, user }: AdminProps) {
   const fetchContests = async () => {
     const response = await getContests();
     if (response) {
+      console.log(response);
       setContests(response);
     }
   };
@@ -39,14 +40,16 @@ export default function Admin({ loading, user }: AdminProps) {
   const fetchEpisodes = async (queryContestId: string) => {
     const response = await getContest(queryContestId);
     if (response) {
-      setEpisodes(response);
+      console.log(response);
+      setEpisodes(response.episodes);
     }
   };
 
   const fetchCategories = async (queryEpisodeId: string) => {
     const response = await getEpisode(queryEpisodeId);
     if (response) {
-      setCategories(response);
+      console.log(response);
+      setCategories(response.categories);
     }
   };
 
@@ -54,7 +57,10 @@ export default function Admin({ loading, user }: AdminProps) {
     <div>
       <Header loading={loading} user={user} />
       <Container style={{ paddingTop: "1rem" }}>
-        <h1 style={{ marginBottom: "1rem" }}>Admin Panel</h1>
+        <h1>Admin Panel</h1>
+        <Row style={{ margin: "1rem" }}>
+          {!user?.admin && <Badge bg="danger">You aren't an admin 😡</Badge>}
+        </Row>
         <Button variant="primary" onClick={() => fetchContests()}>
           Get Contests
         </Button>
@@ -153,7 +159,7 @@ export default function Admin({ loading, user }: AdminProps) {
             <h2>Contests</h2>
             {contests.map((contest) => (
               <div key={contest._id}>
-                <h3>{contest.title}</h3>
+                <h4>{contest.title}</h4>
                 <p>{contest._id}</p>
                 <Button
                   variant="light"
@@ -169,7 +175,7 @@ export default function Admin({ loading, user }: AdminProps) {
             <h2>Episodes</h2>
             {episodes.map((episode) => (
               <div key={episode._id}>
-                <h3>{episode.title}</h3>
+                <h4>{episode.title}</h4>
                 <p>{episode._id}</p>
                 <Button
                   variant="light"
@@ -185,7 +191,7 @@ export default function Admin({ loading, user }: AdminProps) {
             <h2>Categories</h2>
             {categories.map((category) => (
               <div key={category._id}>
-                <h3>{category.title}</h3>
+                <h4>{category.title}</h4>
                 <p>{category._id}</p>
                 <p>Due: {category.dueDate}</p>
                 <p>Correct Prediction: {category.correctPrediction}</p>
