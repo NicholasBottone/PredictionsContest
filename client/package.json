@@ -1,7 +1,10 @@
 {
   "name": "predictionscontest-client",
   "version": "0.1.0",
-  "private": true,
+  "description": "Frontend for a web app for running live predictions contests",
+  "homepage": "https://predictions.bottone.io/",
+  "author": "Nicholas Bottone",
+  "license": "MIT",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
