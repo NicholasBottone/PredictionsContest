@@ -45,6 +45,16 @@ export default function Contest({ loading, user }: ContestProps) {
               </li>
             ))}
         </ul>
+        <h2>Contest Leaderboard</h2>
+        <ol>
+          {contest &&
+            contest.leaderboard.length > 0 &&
+            contest.leaderboard.map((entry) => (
+              <li key={entry}>
+                <p>{entry}</p>
+              </li>
+            ))}
+        </ol>
       </Container>
     </div>
   );

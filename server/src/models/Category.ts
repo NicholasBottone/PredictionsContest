@@ -1,9 +1,13 @@
-import { model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 const CategorySchema = new Schema({
   title: {
     type: String,
     required: true,
+  },
+  contest: {
+    type: Schema.Types.ObjectId,
+    ref: "Contest",
   },
   episode: {
     type: Schema.Types.ObjectId,
@@ -28,6 +32,7 @@ const CategorySchema = new Schema({
 export interface ICategory extends Document {
   _id: string;
   title: string;
+  contest: any;
   episode: any;
   predictions: any[];
   correctPrediction?: string;

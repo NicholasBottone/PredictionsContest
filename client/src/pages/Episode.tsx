@@ -34,6 +34,28 @@ export default function Episode({ loading, user }: EpisodeProps) {
     });
   }, [episodeId]);
 
+  // Calculate the episode leaderboard rankings
+  const leaderboard: { [id: string]: { user: IUser; score: number } } = {};
+  if (episode) {
+    episode.categories.forEach((category) => {
+      category.predictions.forEach((prediction) => {
+        if (!leaderboard[prediction.user._id]) {
+          leaderboard[prediction.user._id] = {
+            user: prediction.user,
+            score: 0,
+          };
+        }
+        if (prediction.prediction === category.correctPrediction) {
+          leaderboard[prediction.user._id].score += 1;
+        }
+      });
+    });
+  }
+
+  const sortedLeaderboard = Object.values(leaderboard).sort(
+    (a, b) => b.score - a.score
+  );
+
   return (
     <div>
       <Header loading={loading} user={user} />
@@ -88,9 +110,22 @@ export default function Episode({ loading, user }: EpisodeProps) {
                       category={category}
                     />
                   ))}
+                <hr />
               </li>
             ))}
         </ul>
+        <h2>Episode Leaderboard</h2>
+        <ol>
+          {sortedLeaderboard.map((entry) => (
+            <li key={entry.user._id}>
+              <p>
+                <strong>{entry.user.username}</strong>
+                <br />
+                Score: {entry.score}
+              </p>
+            </li>
+          ))}
+        </ol>
       </Container>
     </div>
   );

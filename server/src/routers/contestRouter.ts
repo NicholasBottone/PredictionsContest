@@ -1,6 +1,6 @@
 import { Router } from "express";
 import Episode from "../models/Episode";
-import Contest from "../models/Contest";
+import Contest, { IContest } from "../models/Contest";
 import Category from "../models/Category";
 import { IUser } from "../models/User";
 import Prediction from "../models/Prediction";
@@ -151,6 +151,7 @@ contestRouter.post(
     const category = new Category({
       title: req.body.title,
       episode: episode._id,
+      contest: episode.contest,
     });
     await category.save();
     episode.categories.push(category);
@@ -237,6 +238,26 @@ contestRouter.put(
     }
     await category.save();
     res.send(category);
+
+    // Update leaderboard
+    const contest = await Contest.findById(category.contest._id)
+      .populate("episodes")
+      .populate({
+        path: "episodes",
+        populate: {
+          path: "categories",
+          populate: {
+            path: "predictions",
+            populate: {
+              path: "user",
+            },
+          },
+        },
+      });
+    if (!contest) {
+      return;
+    }
+    calculateContestLeaderboard(contest);
   }
 );
 
@@ -276,3 +297,29 @@ contestRouter.put(
 );
 
 export default contestRouter;
+
+function calculateContestLeaderboard(contest: IContest) {
+  // Calculate the contest leaderboard rankings
+  const leaderboard: { [id: string]: { user: IUser; score: number } } = {};
+  for (const episode of contest.episodes) {
+    for (const category of episode.categories) {
+      for (const prediction of category.predictions) {
+        if (!leaderboard[prediction.user._id]) {
+          leaderboard[prediction.user._id] = {
+            user: prediction.user,
+            score: 0,
+          };
+        }
+        if (prediction.prediction === category.correctPrediction) {
+          leaderboard[prediction.user._id].score += 1;
+        }
+      }
+    }
+  }
+  const leaderboardArray = Object.values(leaderboard);
+  leaderboardArray.sort((a, b) => b.score - a.score);
+  contest.leaderboard = leaderboardArray.map(
+    (x) => `${x.user.username} (${x.score} point)`
+  );
+  contest.save();
+}

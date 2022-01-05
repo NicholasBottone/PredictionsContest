@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 
 const ContestSchema = new Schema({
   title: {
@@ -11,12 +11,18 @@ const ContestSchema = new Schema({
       ref: "Episode",
     },
   ],
+  leaderboard: [
+    {
+      type: String,
+    },
+  ],
 });
 
 export interface IContest extends Document {
   _id: string;
   title: string;
   episodes: any[];
+  leaderboard: string[];
 }
 
 const Contest = model<IContest>("Contest", ContestSchema);

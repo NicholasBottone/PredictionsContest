@@ -27,6 +27,7 @@ export interface IContest {
   _id: string;
   title: string;
   episodes: IEpisode[];
+  leaderboard: string[];
 }
 
 export interface ICategory {
