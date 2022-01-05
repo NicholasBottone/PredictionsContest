@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import { getContest } from "../gateway";
@@ -35,6 +35,7 @@ export default function Contest({ loading, user }: ContestProps) {
       <Container style={{ paddingTop: "1rem" }}>
         <h1>{contest?.title}</h1>
         <h2>Pick an Episode</h2>
+        {!contest && <Spinner animation="border" />}
         <ul>
           {contest &&
             contest.episodes.map((episode) => (

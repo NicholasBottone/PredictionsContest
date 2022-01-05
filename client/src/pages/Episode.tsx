@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Container, Image } from "react-bootstrap";
+import { Badge, Button, Container, Image, Spinner } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import { getEpisode, postPrediction } from "../gateway";
@@ -63,6 +63,7 @@ export default function Episode({ loading, user }: EpisodeProps) {
         <h1>{episode?.title}</h1>
         <Image src={episode?.image} fluid alt={episode?.title} />
         <h2>Make your predictions!</h2>
+        {!episode && <Spinner animation="border" />}
         <ul>
           {episode &&
             episode.categories.map((category) => (
