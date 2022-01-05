@@ -18,7 +18,7 @@ authRouter.get("/", (req, res) => {
 
 authRouter.get(
   "/login",
-  passport.authenticate("discord", { scope: ["identify"], prompt: "consent" })
+  passport.authenticate("discord")
 );
 
 authRouter.get("/logout", (req, res) => {
