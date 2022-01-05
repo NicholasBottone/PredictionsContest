@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Container, Image, Spinner } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Col,
+  Container,
+  Image,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import { getEpisode, postPrediction } from "../gateway";
@@ -64,10 +72,10 @@ export default function Episode({ loading, user }: EpisodeProps) {
         <Image src={episode?.image} fluid alt={episode?.title} />
         <h2>Make your predictions!</h2>
         {!episode && <Spinner animation="border" />}
-        <ul>
+        <Row xs={1} lg={2}>
           {episode &&
             episode.categories.map((category) => (
-              <li key={category._id}>
+              <Col key={category._id}>
                 <p>
                   <strong>{category.title}</strong>
                 </p>
@@ -112,17 +120,15 @@ export default function Episode({ loading, user }: EpisodeProps) {
                     />
                   ))}
                 <hr />
-              </li>
+              </Col>
             ))}
-        </ul>
+        </Row>
         <h2>Episode Leaderboard</h2>
         <ol>
           {sortedLeaderboard.map((entry) => (
             <li key={entry.user._id}>
               <p>
-                <strong>{entry.user.username}</strong>
-                <br />
-                Score: {entry.score}
+                <UserComponent user={entry.user} /> - Score: {entry.score}
               </p>
             </li>
           ))}
@@ -142,7 +148,7 @@ function UserComponent({ user }: { user: IUser }) {
         height="30"
         width="30"
       />
-      <span>{user.username}</span>
+      <strong> {user.username}</strong>
     </>
   );
 }

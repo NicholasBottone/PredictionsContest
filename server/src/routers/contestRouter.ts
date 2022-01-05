@@ -319,7 +319,7 @@ function calculateContestLeaderboard(contest: IContest) {
   const leaderboardArray = Object.values(leaderboard);
   leaderboardArray.sort((a, b) => b.score - a.score);
   contest.leaderboard = leaderboardArray.map(
-    (x) => `${x.user.username} (${x.score} point)`
+    (x) => `${x.user.username} - Score: ${x.score}`
   );
   contest.save();
 }
