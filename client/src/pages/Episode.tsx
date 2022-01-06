@@ -201,13 +201,13 @@ function SubmitPredictionComponent({
       {category.title.split(" vs ").length === 2 && (
         <>
           <Button
-            variant="primary"
+            variant="danger"
             onClick={() => setPredictionText(category.title.split(" vs ")[0])}
           >
             {category.title.split(" vs ")[0]}
           </Button>
           <Button
-            variant="danger"
+            variant="primary"
             onClick={() => setPredictionText(category.title.split(" vs ")[1])}
           >
             {category.title.split(" vs ")[1]}
