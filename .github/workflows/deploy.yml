@@ -1,12 +1,13 @@
-name: 🚀 Deploy Production
+name: 🚀 Deploy Backend
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
 jobs:
   build-deploy:
-    name: 🎉 Build and Deploy
+    name: 🎉 Build and Deploy Backend
 
     runs-on: ubuntu-latest
 
@@ -14,10 +15,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
 
-      - name: 🔨 Set up Node 14.18.1
+      - name: 🔨 Set up Node 16
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: 16.x
 
       - name: 🛠 Compile Backend
         run: |
@@ -30,27 +31,11 @@ jobs:
           cp -r server/dist deploy/server
           cp server/* deploy/server || :
 
-          mkdir deploy/server/tmp
-          touch deploy/server/tmp/restart.txt
-
-      - name: ⛏ Build Frontend
-        run: |
-          cd client
-          npm ci
-          npm run build
-          cd ..
-
-          mkdir -p deploy/public
-          cp -r client/build/* deploy/public
-        env:
-          REACT_APP_API_URL: ${{ secrets.API_URL }}
-
       - name: ☁ SFTP Deploy
         uses: easingthemes/ssh-deploy@v2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          REMOTE_PORT: 21098
-          TARGET: ${{ secrets.REMOTE_TARGET }}
-          SOURCE: ${{ secrets.SOURCE_DIR }}
+          TARGET: "/home/${{ secrets.REMOTE_USER }}/PredictionsContest/"
+          SOURCE: "deploy/server/"

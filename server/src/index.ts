@@ -15,7 +15,7 @@ import contestRouter from "./routers/contestRouter";
 import authRouter from "./routers/authRouter";
 
 // Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+dotenv.config();
 
 // Setup Passport.js
 passportConfig();
