@@ -16,14 +16,12 @@ authRouter.get("/", (req, res) => {
   }
 });
 
-authRouter.get(
-  "/login",
-  passport.authenticate("discord")
-);
+authRouter.get("/login", passport.authenticate("discord"));
 
 authRouter.get("/logout", (req, res) => {
-  req.logout();
-  res.redirect(process.env.CLIENT_URL || "");
+  req.logout(() => {
+    res.redirect(process.env.CLIENT_URL || "");
+  });
 });
 
 authRouter.get(
