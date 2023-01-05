@@ -89,7 +89,7 @@ export default function Admin({ loading, user }: AdminProps) {
         </Button>
         <Button
           variant="secondary"
-          onClick={() => postEpisode(contestId, title)}
+          onClick={() => postEpisode(contestId, title, image)}
           disabled={!contestId || !title || !user?.admin}
         >
           Create Episode
@@ -107,7 +107,9 @@ export default function Admin({ loading, user }: AdminProps) {
         </Button>
         <Button
           variant="info"
-          onClick={() => putEpisode(episodeId, title, image)}
+          onClick={() =>
+            putEpisode(episodeId, title, image ? image : undefined)
+          }
           disabled={!episodeId || !user?.admin}
         >
           Update Episode

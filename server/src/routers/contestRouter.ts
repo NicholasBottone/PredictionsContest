@@ -165,6 +165,7 @@ contestRouter.post(
   "/:id/episode",
   param("id").isMongoId(),
   body("title").isString(),
+  body("image").optional().isString(),
   async (req, res) => {
     if (!req.user || !(req.user as IUser).admin) {
       res.status(401).send("Unauthorized");
@@ -186,6 +187,7 @@ contestRouter.post(
     const episode = new Episode({
       title: req.body.title,
       contest: contest._id,
+      image: req.body.image,
     });
     await episode.save();
     contest.episodes.push(episode);

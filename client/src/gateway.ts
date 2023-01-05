@@ -73,9 +73,16 @@ export async function postContest(title: string) {
   }
 }
 
-export async function postEpisode(contestId: string, title: string) {
+export async function postEpisode(
+  contestId: string,
+  title: string,
+  image?: string
+) {
   try {
-    const res = await axios.post(`/contest/${contestId}/episode`, { title });
+    const res = await axios.post(`/contest/${contestId}/episode`, {
+      title,
+      image,
+    });
     if (res.status === 200) {
       return res.data;
     }

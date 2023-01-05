@@ -50,6 +50,7 @@ export default function Header(props: HeaderProps) {
 }
 
 function Profile({ user }: { user?: IUser }) {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   if (user) {
     return (
       <a href={`${apiUrl}/auth/logout`}>
@@ -57,6 +58,5 @@ function Profile({ user }: { user?: IUser }) {
       </a>
     );
   }
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   return <Nav.Link href={`${apiUrl}/auth/login`}>Login</Nav.Link>;
 }
