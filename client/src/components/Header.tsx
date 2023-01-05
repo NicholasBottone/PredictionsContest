@@ -51,7 +51,11 @@ export default function Header(props: HeaderProps) {
 
 function Profile({ user }: { user?: IUser }) {
   if (user) {
-    return <Image src={user?.avatar} roundedCircle width="40" height="40" />;
+    return (
+      <a href={`${apiUrl}/auth/logout`}>
+        <Image src={user?.avatar} roundedCircle width="40" height="40" />
+      </a>
+    );
   }
   const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
   return <Nav.Link href={`${apiUrl}/auth/login`}>Login</Nav.Link>;

@@ -31,21 +31,19 @@ export default function passportConfig() {
       },
       async (_accessToken, _refreshToken, profile, done) => {
         try {
-          const user = await User.findOne({ discordId: profile.id });
-          if (user) {
-            return done(null, user);
-          }
           const avatarUrl = profile.avatar
             ? getAvatarUrl(profile.id, profile.avatar)
             : "/logo.png";
-          const newUser = new User({
-            discordId: profile.id,
-            username: profile.username,
-            discriminator: profile.discriminator,
-            avatar: avatarUrl,
-          });
-          await newUser.save();
-          return done(null, newUser);
+          const user = await User.updateOne(
+            { discordId: profile.id },
+            {
+              username: profile.username,
+              discriminator: profile.discriminator,
+              avatar: avatarUrl,
+            },
+            { upsert: true, new: true }
+          );
+          return done(null, user);
         } catch (err: any) {
           return done(err);
         }
