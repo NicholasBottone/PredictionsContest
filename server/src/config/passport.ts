@@ -34,7 +34,7 @@ export default function passportConfig() {
           const avatarUrl = profile.avatar
             ? getAvatarUrl(profile.id, profile.avatar)
             : "/logo.png";
-          const user = await User.updateOne(
+          const user = await User.findOneAndUpdate(
             { discordId: profile.id },
             {
               username: profile.username,
